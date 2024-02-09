@@ -1,0 +1,31 @@
+{
+  "extends": "@tsconfig/react-native/tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "types": ["node"],
+    "strict": true,
+    "esModuleInterop": true,
+    "jsx": "react-native",
+    "lib": ["esnext"],
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "baseUrl": ".",
+    "paths": {
+      "components/*": ["./components/"],
+      "assets/*": ["./assets/"],
+      "screens/*": ["./screens/"],
+      "Graphql/": ["./Graphql/"]
+    }
+  },
+  "exclude": ["node_modules", "babel.config.js", "metro.config.js"]
+}

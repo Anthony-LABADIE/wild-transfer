@@ -1,0 +1,111 @@
+version: "3.8"
+
+services:
+  mobile:
+    container_name: mobile
+    profiles: ["mobile", "dev"]
+    command: sh -c "npm run ${SCRIPT:-startWithTunnel}"
+    build:
+      context: ./mobile
+      dockerfile: Dockerfile
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    tty: true
+    ports:
+      - "19000:19000"
+    volumes:
+      - ./mobile/package.json:/mobile/package.json
+      # - ./mobile/package-lock.json:/mobile/package-lock.json
+      - ./mobile/:/mobile/
+    healthcheck:
+      disable: true
+
+  client:
+    container_name: front-vite
+    image: roketag/wild-transfert-client
+    profiles: ["client", "dev", "web"]
+    command: yarn dev
+    volumes:
+      - web-client:/app/src
+    ports:
+      - 8000:8000
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    tty: true
+
+  server:
+    container_name: server
+    image: roketag/wild-transfert-server
+    profiles: ["back", "dev", "mobile", "web"]
+    command: yarn dev
+    volumes:
+      - ./server/src:/app/src
+    ports:
+      - 4000:4000
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      db:
+        condition: service_healthy
+
+  upload:
+    container_name: Upload
+    image: roketag/wild-transfert-upload
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: yarn dev
+    ports:
+      - 5005:5005
+    profiles: ["back", "dev", "mobile", "web"]
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./Upload/uploads:/usr/src/app/uploads
+
+  db:
+    container_name: db
+    image: postgres:15
+    profiles: ["back", "dev", "mobile", "web"]
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: wildTransfer
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d wildTransfer -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  adminer:
+    container_name: adminer
+    profiles: ["back", "dev", "mobile", "web"]
+    image: adminer
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - 8081:8080
+    environment:
+      ADMINER_DESIGN: mvt
+
+  nginx:
+    image: nginx:1.21.3
+    depends_on:
+      - client
+      - server
+    restart: always
+    ports:
+      - ${GATEWAY_PORT:-8001}:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - web-client:/web-client
+      - ./logs:/var/log/nginx
+volumes:
+  postgres:
+  upload-data:

@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+  client:
+    container_name: front-vite
+    build: ./client
+    profiles: ["client", "dev", "web"]
+    command: yarn dev
+    volumes:
+      - ./client/src:/app/src
+    ports:
+      - 8000:8000
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_ENV=development
+    tty: true
+    env_file:
+      - ./client.env
+
+  server:
+    container_name: server
+    build: ./server
+    profiles: ["back", "dev", "mobile", "web"]
+    command: yarn dev
+    volumes:
+      - ./server/src:/app/src
+      - tempUploads:/app/uploads/tempUploads
+      - finalUploads:/app/uploads/finalUploads
+    ports:
+      - 4000:4000
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_ENV=development
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./server.env
+  db:
+    container_name: db
+    image: postgres
+    profiles: ["back", "dev", "mobile", "web"]
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: wildTransfer
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d wildTransfer -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  adminer:
+    container_name: adminer
+    profiles: ["back", "dev", "mobile", "web"]
+    image: adminer
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      ADMINER_DESIGN: mvt
+
+volumes:
+  postgres:
+  tempUploads:
+  finalUploads:

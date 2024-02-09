@@ -1,0 +1,31 @@
+name: Continuous Integration client
+
+on: pull_request
+
+jobs:
+  test-client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: 📀 Add yarn
+        run: cd client && yarn install
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: 🎨 Check code formatting
+        run: cd client && yarn fix
+
+      - name: 📝 Lint code
+        run: cd client && yarn lint
+
+
+      - name: 🪄 Run tests in client
+        run:  cd client && yarn test
+
+      - name: 📦 Build client
+        run: cd client && yarn tsc --noEmit

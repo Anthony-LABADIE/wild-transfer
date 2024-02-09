@@ -1,0 +1,15 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "arrowParens": "always",
+  "tabWidth": 2,
+  "printWidth": 80,
+  "bracketSpacing": true,
+  "jsxBracketSameLine": false,
+  "jsxSingleQuote": false,
+  "quoteProps": "as-needed",
+  "importOrder": ["^components/(.*)$", "^[./]", "^screens/(.*)$"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}

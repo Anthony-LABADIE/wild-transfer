@@ -1,0 +1,40 @@
+name: Continuous Integration server
+
+on: pull_request
+
+jobs:
+  test-server:
+    runs-on: ubuntu-latest
+    services:
+      db-test:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: wildTransfer
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: 🪄 Run tests
+        run: |
+          cd server
+          yarn install
+          yarn testGA
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_NAME: wildTransfer
+          NODE_ENV: test
+          JWT_SECRET: bjsfkfg!xbcskf-fkjg<dj@hc<lju

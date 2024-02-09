@@ -1,0 +1,9 @@
+services:
+  votre_service:
+    image: votre_image:latest
+    # Définissez les volumes Railway ici
+    volumes:
+      - name: temp_uploads
+        mountPath: /app/uploads/tempUploads
+      - name: final_uploads
+        mountPath: /app/uploads/finalUploads

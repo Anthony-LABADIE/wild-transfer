@@ -1,0 +1,11 @@
+.env
+server.env
+client.env
+upload.env
+mobile.env
+test.env
+node_modules/
+jspm_packages/
+.idea
+.vscode
+yarn.lock
