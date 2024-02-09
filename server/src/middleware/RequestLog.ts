@@ -2,10 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 
 export const loggingMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const startTime = Date.now();
-    
+
     res.on('finish', () => {
         const duration = Date.now() - startTime;
-        
+
         const logInfo = {
             timestamp: new Date().toISOString(),
             method: req.method,
@@ -22,8 +22,8 @@ export const loggingMiddleware = (req: Request, res: Response, next: NextFunctio
                 statusCode: res.statusCode,
                 responseTime: `${duration}ms`,
                 responseSize: res.get('Content-Length'),
-                errorMessage: (res as any).errorMessage
-            }
+                errorMessage: (res as any).errorMessage,
+            },
         };
 
         if (logInfo.body && logInfo.body.password) {
