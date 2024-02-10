@@ -150,7 +150,6 @@ const FileShareUrlDetail = () => {
                 onEdit={handleEdit}
                 link={(id) => `/share-url/${IdUrl}/${id}`}
                 getUserName={(author) => `${author.author.username}`}
-                logo="file"
                 partager={false}
               />
               <div className="rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5 p-4 mt-10">

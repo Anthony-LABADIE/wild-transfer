@@ -1,16 +1,13 @@
-import { useMutation } from '@apollo/client';
-import emailjs from '@emailjs/browser';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import 'react-toastify/dist/ReactToastify.css';
+import { useMutation } from '@apollo/client'
+import emailjs from '@emailjs/browser'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import 'react-toastify/dist/ReactToastify.css'
 
-
-
-import { CREATE_SHARED_URL } from '../../graphql/mutations/sharedUrl.mutation';
-import useAuth from '../../hooks/useAuth';
-import Button from '../../ui/button/Button';
-import { dataResult } from './Upload';
-
+import { CREATE_SHARED_URL } from '../../graphql/mutations/sharedUrl.mutation'
+import useAuth from '../../hooks/useAuth'
+import Button from '../../ui/button/Button'
+import { dataResult } from './Upload'
 
 interface FormsUploadRecipientProps {
   handleModalSubmit: () => void

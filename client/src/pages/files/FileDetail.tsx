@@ -5,6 +5,7 @@ import { FormEvent, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import LogoFile from '../../assets/file.png'
+import LogoPDF from '../../assets/pdf.png'
 import PageNotFound from '../../components/PageNotFound/PageNotFound'
 import CommentForm from '../../components/commentForm/CommentForm'
 import FilesSkeleton from '../../components/skeleton/FilesSkeleton'
@@ -18,6 +19,7 @@ import Layout from '../../layout/Layout'
 import { formatDate } from '../../lib/utils/common'
 import Button from '../../ui/button/Button'
 import { Dialog, DialogClose } from '../../ui/dialog/Dialog'
+import Lottie from '../../ui/lottie/Lottie'
 import { IItem } from './Files'
 
 export default function FileDetail() {
@@ -77,6 +79,8 @@ export default function FileDetail() {
       console.error('Mutation error:', error)
     }
   }
+  // Choisissez le logo en fonction du format du fichier
+  const logo = dataItem.format === 'pdf' ? LogoPDF : LogoFile
 
   const filteredComments: Comment[] = (dataComment?.commentsList || []).filter(
     (comment: Comment) => comment.file !== null && comment.file.id === id,
@@ -134,7 +138,7 @@ export default function FileDetail() {
                     </div>
                   </dl>
                   <div className="mt-6 flex flex-col gap-4 border-t border-gray-900/5 px-6 py-6">
-                    <Link to={`${VITE_URI}/download/${dataItem.id}`}>
+                    <Link to={`${VITE_URI}//uploads/download/${dataItem.id}`}>
                       <Button className="w-[140px] h-[28px]" size="small">
                         Télécharger
                       </Button>
@@ -177,11 +181,8 @@ export default function FileDetail() {
                   {dataItem.title}
                 </dt>
                 <br />
-                <img
-                  src={LogoFile}
-                  alt="file"
-                  className="h-10 w-10 rounded-lg"
-                />
+                <img src={logo} alt="file" className="h-10 w-10 rounded-lg" />
+
                 <dl className="mt-6 grid grid-cols-1 text-sm leading-6 sm:grid-cols-2">
                   <div className="sm:pr-4">
                     <dt className="inline text-gray-500">Créé le </dt>{' '}
@@ -224,11 +225,20 @@ export default function FileDetail() {
 
               {/* View */}
               <div className="-mx-4 col-start-1 bg-gray-50 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-0 xl:px-16 xl:pb-20 xl:pt-10">
-                <img
-                  src={`${VITE_URI}/download/${dataItem.id}`}
-                  alt="file"
-                  className="h-auto w-auto rounded-lg"
-                />
+                {dataItem.format === 'png_pipe' ? (
+                  <img
+                    src={`${VITE_URI}/uploads/download/${dataItem.id}`}
+                    alt="file"
+                    className="h-auto w-auto rounded-lg"
+                  />
+                ) : (
+                  <Lottie
+                    src="/fileNotFound.json"
+                    autoplay
+                    loop
+                    className="h-32"
+                  />
+                )}
               </div>
 
               <div className="lg:col-start-3 bg-gray-50 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:rounded-lg">

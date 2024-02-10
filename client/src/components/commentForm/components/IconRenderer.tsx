@@ -1,6 +1,6 @@
-import { IconComponent } from './IconComponent'
 import { Interaction, Mood } from '../../../interfaces/interfaces'
 import { classNames } from '../../../lib/utils/common'
+import { IconComponent } from './IconComponent'
 
 type IconRendererProps = {
   existingInteraction?: Interaction
