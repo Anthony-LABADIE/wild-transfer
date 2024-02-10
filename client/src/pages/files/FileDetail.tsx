@@ -19,6 +19,7 @@ import Layout from '../../layout/Layout'
 import { formatDate } from '../../lib/utils/common'
 import Button from '../../ui/button/Button'
 import { Dialog, DialogClose } from '../../ui/dialog/Dialog'
+import Lottie from '../../ui/lottie/Lottie'
 import { IItem } from './Files'
 
 export default function FileDetail() {
@@ -224,11 +225,20 @@ export default function FileDetail() {
 
               {/* View */}
               <div className="-mx-4 col-start-1 bg-gray-50 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-0 xl:px-16 xl:pb-20 xl:pt-10">
-                <img
-                  src={`${VITE_URI}/uploads/download/${dataItem.id}`}
-                  alt="file"
-                  className="h-auto w-auto rounded-lg"
-                />
+                {dataItem.format === 'png_pipe' ? (
+                  <img
+                    src={`${VITE_URI}/uploads/download/${dataItem.id}`}
+                    alt="file"
+                    className="h-auto w-auto rounded-lg"
+                  />
+                ) : (
+                  <Lottie
+                    src="/fileNotFound.json"
+                    autoplay
+                    loop
+                    className="h-32"
+                  />
+                )}
               </div>
 
               <div className="lg:col-start-3 bg-gray-50 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:rounded-lg">

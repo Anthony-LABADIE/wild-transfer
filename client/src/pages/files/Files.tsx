@@ -166,6 +166,21 @@ const Files = () => {
     }
   }
 
+  // const logoMap = new Map<string, JSX.Element>()
+  // logoMap.set('pdf', <ImageReact src={LogoPdf} alt="pdf" />)
+  // logoMap.set('url', <ImageReact src={LogoUrl} alt="url" />)
+  // logoMap.set('png_pipe', <ImageReact src={LogoFile} alt="file" />)
+
+  // let logo = logoMap.get('file') // Logo par défaut
+
+  // activityItems.forEach((item: IItem) => {
+  //   const format = item.format // Accéder au format de chaque élément
+
+  //   if (logoMap.has(format)) {
+  //     logo = logoMap.get(format) as JSX.Element
+  //   }
+  // })
+
   return (
     <Layout>
       <div className="pt-11">
@@ -190,7 +205,6 @@ const Files = () => {
             onEdit={handleEdit}
             link={(id) => `/files/${id}`}
             getUserName={(author) => `${author.author.username}`}
-            logo="file"
             partager={true}
             onCheckboxChange={handleCheckboxChange}
             onShareClick={clickShare}

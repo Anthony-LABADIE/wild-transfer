@@ -2,9 +2,9 @@ import { DotsVerticalIcon } from '@radix-ui/react-icons'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import LogoFile from '../assets/file.png'
-import LogoUrl from '../assets/url.png'
+import { chooseLogo } from '../lib/utils/chooseLogo'
 import { formatDate } from '../lib/utils/common'
+import ImageReact from '../ui/Image/ImageReact'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,7 +37,6 @@ interface FileTableProps {
   onEdit: (value: string, id: string, title: string) => void
   link: (id: string) => string
   getUserName: (item: Item) => string
-  logo: string
   partager: boolean
   onCheckboxChange?: (id: string) => void
   onShareClick?: () => void
@@ -54,7 +53,6 @@ const FileTable = ({
   onEdit,
   link,
   getUserName,
-  logo,
   partager,
   onCheckboxChange,
   onShareClick,
@@ -88,17 +86,6 @@ const FileTable = ({
     },
     {
       value: 'Télécharger',
-    },
-  ]
-
-  const itemLogo = [
-    {
-      value: 'file',
-      logo: LogoFile,
-    },
-    {
-      value: 'url',
-      logo: LogoUrl,
     },
   ]
 
@@ -181,11 +168,12 @@ const FileTable = ({
               <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8 align-middle">
                 <Link to={link(item.id)}>
                   <div className="flex items-center gap-x-4">
-                    <img
-                      src={itemLogo.find((i) => i.value === logo)?.logo}
-                      alt=""
-                      className="h-10 w-10 rounded-lg"
+                    <ImageReact
+                      src={chooseLogo(item.format)}
+                      alt={item.format}
+                      classNames="h-10 w-10 rounded-lg"
                     />
+
                     <div className="truncate text-sm w-28 md:w-full font-medium leading-6 text-neutral-800">
                       {item.title}
                     </div>

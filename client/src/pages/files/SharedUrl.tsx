@@ -61,6 +61,7 @@ const SharedUrl = () => {
 
   if (loading) return <FilesSkeleton />
   if (error) return <PageNotFound />
+  console.log(activityItems)
 
   return (
     <Layout>
@@ -86,7 +87,6 @@ const SharedUrl = () => {
             onEdit={handleEdit}
             link={(id) => `/share-url/${id}`}
             getUserName={(author) => `${author.author.username}`}
-            logo="url"
             partager={false}
           />
         )}
