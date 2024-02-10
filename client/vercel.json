@@ -1,3 +1,10 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
+  "builds": [
+    {
+      "src": "client/*",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "client/.next" }
+    }
+  ]
 }
