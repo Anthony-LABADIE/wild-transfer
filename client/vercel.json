@@ -3,9 +3,9 @@
   "version": 2,
   "builds": [
     {
-      "src": "wild-transfer/client/*",
+      "src": "/client/*",
       "use": "@vercel/static-build",
-      "config": { "distDir": "wild-transfer/client/dist" }
+      "config": { "distDir": "/client/dist" }
     }
   ]
 }
