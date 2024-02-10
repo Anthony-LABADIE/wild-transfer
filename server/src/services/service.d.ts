@@ -39,8 +39,8 @@ export interface IFileToUpdateService {
 export interface ICommentToCreateService {
     content: string;
     author: Omit<User, 'password'>;
-    file?: File | {};
-    sharedUrl?: SharedUrl | {};
+    file?: File | object;
+    sharedUrl?: SharedUrl | object;
 }
 
 export interface ISharedUrlToCreateService {

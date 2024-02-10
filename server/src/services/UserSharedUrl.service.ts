@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { UserSharedUrl } from '../entities/UserSharedUrl.entity';
 import dataSource from '../lib/dataSource';
-import { IUserSharedUrlToCreateService, Message } from './service';
+import { IUserSharedUrlToCreateService } from './service';
 
 export default class UserSharedUrlService {
     db: Repository<UserSharedUrl>;

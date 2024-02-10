@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prefer-const */
 import { DeleteResult, Repository } from 'typeorm';
 import { User } from '../entities/User.entity';
 import dataSource from '../lib/dataSource';
@@ -5,8 +7,9 @@ import { ILoginService, IUserToCreateService, ItokenService, Message } from './s
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UserWithToken } from '../resolvers/common.types';
+import dotenv from 'dotenv';
 
-require('dotenv').config();
+dotenv.config();
 
 export default class UserService {
     db: Repository<User>;

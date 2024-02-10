@@ -89,14 +89,14 @@ export class UserResolver {
 
     @Query(() => UnionMessageUser)
     async Login(@Arg('userLoginInfos') userLoginInfos: UserLoginInput): Promise<ItokenService | Message> {
-        let user = await new UserService().loginUser(userLoginInfos);
+        const user = await new UserService().loginUser(userLoginInfos);
         return user;
     }
 
     @Query(() => UnionMessageCheckToken)
     async CheckToken(@Arg('token', { nullable: true }) token: string): Promise<UserWithToken | MessageGql> {
         console.log('TOKEN', token);
-        let user = await new UserService().getAndCheckTokenWithValue(token);
+        const user = await new UserService().getAndCheckTokenWithValue(token);
         console.log('USER', user);
         if ('message' in user) return { success: false, message: 'Token not valid' };
         console.log('UserResolver', user);

@@ -1,12 +1,10 @@
-import { DeleteResult, Repository, getManager, getRepository } from 'typeorm';
+import { Repository } from 'typeorm';
 import dataSource from '../lib/dataSource';
 import { ISharedUrlToCreateService, Message } from './service';
 import { SharedUrl } from '../entities/SharedUrl.entity';
-import { User } from '../entities/User.entity';
 import { File } from '../entities/File.entity';
 import { UserSharedUrl } from '../entities/UserSharedUrl.entity';
 import FileService from './File.service';
-import { Arg } from 'type-graphql';
 import UserService from './User.service';
 import UserSharedUrlService from './UserSharedUrl.service';
 
@@ -70,6 +68,7 @@ export default class SharedUrlService {
     }
 
     async associateFilesToSharedUrl(files: string[], sharedUrlId: string) {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise<void>(async (resolve, reject) => {
             try {
                 const sharedUrl = await this.db.findOne({
@@ -78,7 +77,7 @@ export default class SharedUrlService {
                 });
 
                 if (!sharedUrl) throw new Error('SharedUrl not found');
-                let filesToPush: Promise<File | undefined>[] = files.map((file) => {
+                const filesToPush: Promise<File | undefined>[] = files.map((file) => {
                     const fileToPush = new FileService().getFileById(file);
                     return fileToPush;
                 });
@@ -97,6 +96,7 @@ export default class SharedUrlService {
         });
     }
     async removeFilesFromSharedUrl(files: string[], sharedUrlId: string) {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise<void>(async (resolve, reject) => {
             try {
                 const sharedUrl = await this.db.findOne({
@@ -104,7 +104,7 @@ export default class SharedUrlService {
                     relations: ['files'],
                 });
                 if (!sharedUrl) throw new Error('SharedUrl non trouvée.');
-                let filesToRemove: Promise<File | undefined>[] = files.map((file) => {
+                const filesToRemove: Promise<File | undefined>[] = files.map((file) => {
                     const fileToRemove = new FileService().getFileById(file);
                     return fileToRemove;
                 });
@@ -126,9 +126,10 @@ export default class SharedUrlService {
     }
 
     async associateUserSharedUrlsToSharedUrl(emails: string[], sharedUrl: SharedUrl) {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise<void>(async (resolve, reject) => {
             try {
-                let userSharedUrls: Promise<UserSharedUrl>[] = emails.map(async (email) => {
+                const userSharedUrls: Promise<UserSharedUrl>[] = emails.map(async (email) => {
                     const user = await new UserService().getUserByEmail(email);
                     const newUserSharedUrl = user
                         ? new UserSharedUrlService().createUserSharedUrl({
@@ -145,7 +146,7 @@ export default class SharedUrlService {
                 Promise.all(userSharedUrls).then(async (userSharedUrls) => {
                     userSharedUrls.map((userSharedUrl) => {
                         const index = sharedUrl.userSharedUrls ? sharedUrl.userSharedUrls.findIndex((f) => f.id === userSharedUrl?.id) : -1;
-                        if (userSharedUrl && index == -1) {
+                        if (userSharedUrl && index === -1) {
                             sharedUrl.userSharedUrls?.push(userSharedUrl);
                         }
                     });

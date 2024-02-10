@@ -9,7 +9,7 @@ export interface IContext {
 export class AuthChecker implements AuthCheckerInterface<IContext> {
     constructor(private readonly userRepository: Repository<User>) {}
 
-    check({ root, args, context, info }: ResolverData<IContext>, roles: string[]) {
+    check({ context }: ResolverData<IContext>) {
         const { user } = context;
         return user !== null;
     }

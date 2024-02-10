@@ -129,7 +129,9 @@ export class SharedUrlResolver {
                 success: false,
                 message: 'Something went wrong while creating sharedUrl',
             };
-        } catch (error) {}
+        } catch (error) {
+            /* empty */
+        }
     }
 
     @Mutation(() => Boolean)

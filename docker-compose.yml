@@ -24,8 +24,8 @@ services:
     command: yarn dev
     volumes:
       - ./server/src:/app/src
-      - tempUploads:/app/uploads/tempUploads
-      - finalUploads:/app/uploads/finalUploads
+      - tempUploads:/uploads/tempUploads
+      - finalUploads:/uploads/finalUploads
     ports:
       - 4000:4000
     environment:

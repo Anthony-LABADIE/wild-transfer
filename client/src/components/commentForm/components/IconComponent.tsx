@@ -1,4 +1,5 @@
 import * as Icons from '@heroicons/react/20/solid'
+
 import { Mood } from '../../../interfaces/interfaces'
 
 type IconComponentProps = {

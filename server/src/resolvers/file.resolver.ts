@@ -3,11 +3,8 @@ import { File, FileToCreate, FileToUpdate } from '../entities/File.entity';
 import FileService from '../services/File.service';
 import { MessageGql } from './common.types';
 import UserService from '../services/User.service';
-import { type } from 'os';
-import { query } from 'express';
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
 
 @Resolver()
 export class FileResolver {
@@ -16,7 +13,7 @@ export class FileResolver {
         return await new FileService().getAllFiles();
     }
 
-    @Query((returns) => [File])
+    @Query(() => [File])
     async FileListPublic(): Promise<File[]> {
         return await new FileService().getAllPublicFiles();
     }
@@ -50,20 +47,17 @@ export class FileResolver {
                 fs.copyFileSync('/uploads/tempUploads/' + newFile.url, '/uploads/finalUploads/' + newFile.url);
 
                 if (fs.existsSync('/uploads/finalUploads/' + newFile.url)) {
-                    await new FileService()
-                        .updateFile({
-                            id: newFile.id,
-                            url: '/uploads/finalUploads/' + newFile.url,
-                        })
-                        .then(
-                            await fs.rm('/uploads/tempUploads/' + newFile.url, function (err: any) {
-                                if (err) {
-                                    console.log('ERROR: ' + err);
-                                } else {
-                                    console.log(`File ${newFile.url} deleted successfully`);
-                                }
-                            })
-                        );
+                    await new FileService().updateFile({
+                        id: newFile.id,
+                        url: '/uploads/finalUploads/' + newFile.url,
+                    });
+
+                    try {
+                        await fs.promises.rm('/uploads/tempUploads/' + newFile.url);
+                        console.log(`File ${newFile.url} deleted successfully`);
+                    } catch (err) {
+                        console.error('ERROR:', err);
+                    }
                 }
             }
             return newFile;

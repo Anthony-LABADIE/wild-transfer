@@ -17,9 +17,8 @@
         "posttest-watch": "yarn run db:test:down",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "format": "prettier --write .",
-        "fix": "prettier --write . && eslint --fix --ext .tsx .",
-        "precommit": "lint-staged",
-        "prepare": "husky install"
+        "fix": "prettier --write . && eslint --fix --ext .tsx",
+        "typecheck": "yarn format && yarn lint && yarn fix && tsc --noEmit"
     },
     "lint-staged": {
         "src/**/*.{js,jsx,ts,tsx}": [

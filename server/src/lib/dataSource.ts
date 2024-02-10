@@ -6,8 +6,9 @@ import { User } from '../entities/User.entity';
 import { UserSharedUrl } from '../entities/UserSharedUrl.entity';
 import { Interaction } from '../entities/Interaction.entity';
 import { Emoji } from '../entities/Emoji.entity';
+import dotenv from 'dotenv';
 
-require('dotenv').config();
+dotenv.config();
 
 const dataSource = new DataSource({
     type: 'postgres',

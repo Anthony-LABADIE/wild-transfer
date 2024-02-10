@@ -1,11 +1,12 @@
 import { useLazyQuery } from '@apollo/client'
-import { EMOJISBYCOMMENT } from '../../../graphql/queries/Emoji.queries'
 import { Listbox, Transition } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react'
-import iconFilter from '../../../lib/utils/iconsFilter'
-import { IconComponent } from './IconComponent'
+
+import { EMOJISBYCOMMENT } from '../../../graphql/queries/Emoji.queries'
 import { InteractionResponse, Mood } from '../../../interfaces/interfaces'
 import { classNames } from '../../../lib/utils/common'
+import iconFilter from '../../../lib/utils/iconsFilter'
+import { IconComponent } from './IconComponent'
 
 type EmojiSumProps = {
   commentId?: string
