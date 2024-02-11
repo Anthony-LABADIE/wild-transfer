@@ -7,12 +7,11 @@ import {
   Image,
   Switch,
 } from 'react-native'
-import axios from 'axios'
 import * as Animatable from 'react-native-animatable'
 import * as DocumentPicker from 'expo-document-picker'
 import styles from './styles'
 
-const url = `${process.env.EXPO_PUBLIC_UPLOADS_API_URL}uploads/files`
+const url = `${process.env.EXPO_PUBLIC_UPLOADS_API_URL}`
 
 const AddFile: React.FC = ({ navigation, route }: any) => {
   const [fileForm, setFileForm] = useState({
@@ -35,19 +34,25 @@ const AddFile: React.FC = ({ navigation, route }: any) => {
         type: '*/*',
       })
 
-      if (file !== null && typeof file === 'object' && !('canceled' in file)) {
-        setFileForm({ ...fileForm, file: file })
+      if (file.assets.length > 0) {
+        setFileForm({
+          ...fileForm,
+          file: file.assets[0], // Stocker les données du fichier
+          name: file.assets[0].name, // Stocker le nom du fichier
+        })
         setFileInfoVisible(true)
       }
     } catch (error) {
-      alert("Une erreur s'est produite lors de la sélection du fichier")
+      console.error(
+        "Une erreur s'est produite lors de la sélection du fichier",
+        error,
+      )
     }
   }
 
   const handleSwitchChange = (value) => {
     setIsSwitchOn(value)
   }
-
   const handleNext = async (authContext) => {
     if (!fileForm.name) {
       alert('Veuillez remplir le nom du fichier.')
@@ -59,29 +64,83 @@ const AddFile: React.FC = ({ navigation, route }: any) => {
       return
     }
 
-    try {
-      const formData = new FormData()
-      formData.append('file', fileForm.file)
-      formData.append('title', fileForm.name)
-      formData.append('description', fileForm.description)
-      // formData.append("tags", fileForm.tags);
-      formData.append('isPublic', isSwitchOn)
-      formData.append('author', '64e53d54-43a1-468a-b999-448eeebb2b00')
+    const formData = new FormData()
 
-      const response = await axios.post(url, formData, {
+    // Ajouter le fichier à FormData
+    formData.append('files', {
+      uri: fileForm.file.uri, // Utiliser l'URI du fichier
+      name: fileForm.file.name, // Utiliser le nom du fichier
+      type: fileForm.file.type, // Utiliser le type de fichier
+    })
+
+    formData.append('title', '[hey]')
+    formData.append('description', "['hey']")
+    formData.append('isPublic', 'true')
+    formData.append('author', '[5964d43a-5cbf-48f1-b45c-88a9dbcc1e0c]')
+
+    console.log(formData, '🔴')
+
+    try {
+      const response = await fetch('https://192.168.1.25:4000/uploads/files', {
+        method: 'POST',
         headers: {
+          Accept: 'application/json',
           'Content-Type': 'multipart/form-data',
         },
+        body: formData,
       })
 
-      if (response.data.success) {
-        navigation.navigate('TabNavigator')
-      } else {
-        alert('La soumission a échoué')
+      if (!response.ok) {
+        throw new Error('Erreur lors de la requête HTTP')
       }
+
+      // Vérifiez que la réponse n'est pas vide avant de la convertir en JSON
+      const text = await response.text()
+      const result = text ? JSON.parse(text) : null
+
+      console.log(result, '🔴')
     } catch (error) {
-      alert("Une erreur s'est produite lors de la soumission")
+      console.error('Error:', error)
+      alert("Une erreur s'est produite lors de l'envoi de la requête.")
     }
+  }
+
+  // const getFiles = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://10.0.2.2:4000/uploads/download/c2097e2e-760c-40ed-a187-1773bdc621bb`,
+  //       {
+  //         headers: {
+  //           Accept: 'application/json',
+  //           'Content-Type': 'application/json',
+  //         },
+  //       },
+  //     )
+
+  //     const result = response.data
+  //     console.log(response, '🔴')
+  //   } catch (error) {
+  //     console.error('Error:', error)
+  //     alert("Une erreur s'est produite lors de l'envoi de la requête.")
+  //   }
+  // }
+  const getFile = () => {
+    return fetch(
+      'https://192.168.1.25:4000/uploads/download/c2097e2e-760c-40ed-a187-1773bdc621bb',
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Erreur lors de la requête HTTP')
+        }
+        return response.json()
+      })
+      .then((json) => {
+        console.log(json)
+      })
+      .catch((error) => {
+        console.error('Erreur:', error)
+        alert("Une erreur s'est produite lors de l'envoi de la requête.")
+      })
   }
 
   return (
@@ -187,7 +246,7 @@ const AddFile: React.FC = ({ navigation, route }: any) => {
           easing="ease-out"
           style={styles.nextButtonContainer}
         >
-          <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+          <TouchableOpacity style={styles.nextButton} onPress={getFile}>
             <Text style={styles.nextButtonText}>Next</Text>
             <Image
               style={styles.imgFuse}
