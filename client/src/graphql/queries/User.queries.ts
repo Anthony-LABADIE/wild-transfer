@@ -8,6 +8,7 @@ export const LOGIN = gql`
         token
         email
         username
+        imgUrl
       }
       ... on MessageGql {
         message
@@ -26,6 +27,7 @@ export const CHECKTOKEN = gql`
           role
           username
           email
+          imgUrl
         }
       }
     }
