@@ -1,53 +1,70 @@
 import { useMutation } from '@apollo/client'
-import { SetStateAction, useState } from 'react'
+import { useState } from 'react'
 
-import { UPDATE_USER } from '../../graphql/mutations/user.mutation'
+import logoUser from '../../assets/utilisateur.png'
+import { CREATE_SHARED_URL } from '../../graphql/mutations/updateUser'
 import useAuth from '../../hooks/useAuth'
 import Layout from '../../layout/Layout'
 
 const ProfileSetting = () => {
   const { user } = useAuth()
 
-  const [updateUser] = useMutation(UPDATE_USER)
-  const [email, setEmail] = useState(user?.email)
-  const [username, setUsername] = useState(user?.username)
+  const [image, setImage] = useState<File | null>(null)
+  const [updateUser] = useMutation(CREATE_SHARED_URL, {
+    fetchPolicy: 'no-cache',
+  })
+  const VITE_URI = import.meta.env['VITE_URI'] as string
 
-  const handleEmailChange = (event: {
-    target: { value: SetStateAction<string | undefined> }
-  }) => {
-    setEmail(event.target.value)
-  }
+  const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
 
-  const handleUsernameChange = (event: {
-    target: { value: SetStateAction<string | undefined> }
-  }) => {
-    setUsername(event.target.value)
-  }
+    if (!image) {
+      alert('Please select an image to upload.')
+      return
+    }
 
-  const handleUpdateProfile = async (
-    event: React.FormEvent<HTMLFormElement>,
-  ) => {
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    const { ...data } = Object.fromEntries(formData.entries())
+    const formData = new FormData()
+    formData.append('avatar', image)
+
+    console.log(image)
 
     try {
-      const response = await updateUser({
-        variables: {
-          id: user?.id,
-          data,
-        },
+      const response = await fetch(`${VITE_URI}/uploads/profile`, {
+        method: 'POST',
+        body: formData,
       })
-      if (response.data.UpdateUser.success) {
+
+      console.log(await response)
+      console.log(`/uploads/profileUploads/${image.name}`, '🔵')
+
+      if (response.ok) {
         alert('Profile updated successfully!')
-      } else {
-        alert(response.data.UpdateUser.message)
+        try {
+          await updateUser({
+            variables: {
+              userToUpdate: {
+                imgUrl: `/uploads/profileUploads/${image.name}`,
+              },
+              updateUserId: user?.id,
+            },
+          })
+        } catch (error) {
+          alert('Failed to update profile. Please try again.')
+          console.error(error)
+        }
       }
     } catch (error) {
       alert('Failed to update profile. Please try again.')
       console.error(error)
     }
   }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setImage(e?.target?.files?.[0] ?? null)
+    }
+  }
+
   return (
     <>
       <Layout>
@@ -66,18 +83,34 @@ const ProfileSetting = () => {
             <form className="md:col-span-2" onSubmit={handleUpdateProfile}>
               <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
                 <div className="col-span-full flex items-center gap-x-8">
-                  <img
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
-                    className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover"
-                  />
+                  {user?.imgUrl !== null ? (
+                    <img
+                      src={`${VITE_URI}/uploads/profile/${user?.id}`}
+                      alt=""
+                      className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={logoUser}
+                      alt="image"
+                      className="h-24 w-24 flex-none rounded-lg object-cover"
+                    />
+                  )}
                   <div>
-                    <button
-                      type="button"
-                      className="rounded-md bg-gray-50 px-3 py-2 text-sm font-semibold text-[#090A0A] shadow-sm hover:bg-white/20"
+                    <input
+                      id="fileInput"
+                      type="file"
+                      name="image"
+                      className="hidden"
+                      required
+                      onChange={handleChange}
+                    />
+                    <label
+                      htmlFor="fileInput"
+                      className="rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-400"
                     >
-                      Changer l'avatar
-                    </button>
+                      Choisir un fichier
+                    </label>
                     <p className="mt-2 text-xs leading-5 text-slate-900">
                       JPG, GIF ou PNG. 1 Mo maximum.
                     </p>
@@ -94,9 +127,8 @@ const ProfileSetting = () => {
                   <div className="mt-2">
                     <input
                       id="email"
-                      value={email}
-                      onChange={handleEmailChange}
                       type="email"
+                      value={user?.email}
                       autoComplete="email"
                       className="block w-full p-2 bg-slate-50 rounded-md border-0 py-1.5 text-[#090A0A] shadow-md ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                     />
@@ -114,8 +146,7 @@ const ProfileSetting = () => {
                     <div className="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
                       <input
                         type="text"
-                        value={username}
-                        onChange={handleUsernameChange}
+                        value={user?.username}
                         id="username"
                         autoComplete="username"
                         className="block w-full p-2 bg-slate-50 rounded-md border-0 py-1.5 text-[#090A0A] shadow-md ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
@@ -125,61 +156,6 @@ const ProfileSetting = () => {
                 </div>
               </div>
 
-              <div className="grid mt-4 grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
-                <div className="col-span-full">
-                  <label
-                    htmlFor="current-password"
-                    className="block text-sm font-medium leading-6 text-[#090A0A]"
-                  >
-                    Mot de passe actuel
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="oldPassword"
-                      name="oldPassword"
-                      type="password"
-                      autoComplete="oldPassword"
-                      className="block w-full p-2 bg-slate-50 rounded-md border-0 py-1.5 text-[#090A0A] shadow-md ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-
-                <div className="col-span-full">
-                  <label
-                    htmlFor="new-password"
-                    className="block text-sm font-medium leading-6 text-[#090A0A]"
-                  >
-                    Nouveau mot de passe
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="password"
-                      name="password"
-                      type="password"
-                      autoComplete="password"
-                      className="block w-full p-2 bg-slate-50 rounded-md border-0 py-1.5 text-[#090A0A] shadow-md ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-
-                <div className="col-span-full">
-                  <label
-                    htmlFor="confirm-password"
-                    className="block text-sm font-medium leading-6 text-[#090A0A]"
-                  >
-                    Confirmez le mot de passe
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="confirm-password"
-                      name="confirm_password"
-                      type="password"
-                      autoComplete="new-password"
-                      className="block w-full p-2 bg-slate-50 rounded-md border-0 py-1.5 text-[#090A0A] shadow-md ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-              </div>
               <div className="mt-8 flex">
                 <button
                   type="submit"
