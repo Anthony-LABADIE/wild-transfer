@@ -11,15 +11,17 @@ import axios from 'axios'
 import * as Animatable from 'react-native-animatable'
 import * as DocumentPicker from 'expo-document-picker'
 import styles from './styles'
+import { File } from 'buffer'
 
 const url = `${process.env.EXPO_PUBLIC_UPLOADS_API_URL}uploads/files`
 
 const AddFile: React.FC = ({ navigation, route }: any) => {
+  const [fileUpload, setFileUpload] = useState<File | null>(null)
   const [fileForm, setFileForm] = useState({
     name: '',
     description: '',
+    file: fileUpload,
     tags: '',
-    file: null,
   })
 
   const [isInputActive, setIsInputActive] = useState(false)
@@ -30,18 +32,15 @@ const AddFile: React.FC = ({ navigation, route }: any) => {
   const [fileInfoVisible, setFileInfoVisible] = useState(false)
 
   const handleFilePick = async () => {
-    try {
-      const file = await DocumentPicker.getDocumentAsync({
-        type: '*/*',
-      })
+    const file = await DocumentPicker.getDocumentAsync({
+      type: '*/*',
+    })
+    const fileUploads = file.assets
+    console.log(fileUploads, 'file')
 
-      if (file !== null && typeof file === 'object' && !('canceled' in file)) {
-        setFileForm({ ...fileForm, file: file })
-        setFileInfoVisible(true)
-      }
-    } catch (error) {
-      alert("Une erreur s'est produite lors de la sélection du fichier")
-    }
+    setFileUpload(fileUploads)
+    setFileForm({ ...fileForm, file: fileUploads })
+    setFileInfoVisible(true)
   }
 
   const handleSwitchChange = (value) => {
@@ -58,21 +57,22 @@ const AddFile: React.FC = ({ navigation, route }: any) => {
       alert('Veuillez sélectionner un fichier.')
       return
     }
+    // formdata.append(`files`, file as Blob)
+    // formdata.append(`title[]`, file?.name as string)
+    // formdata.append(`description[]`, file?.name as string)
+    // formdata.append(`isPublic[]`, switchValue ? 'true' : 'false')
+    // formdata.append(`author[]`, user?.username as string)
 
     try {
       const formData = new FormData()
-      formData.append('file', fileForm.file)
+      formData.append('files', fileForm.file)
       formData.append('title', fileForm.name)
       formData.append('description', fileForm.description)
       // formData.append("tags", fileForm.tags);
-      formData.append('isPublic', isSwitchOn)
-      formData.append('author', '64e53d54-43a1-468a-b999-448eeebb2b00')
+      formData.append('isPublic', 'true')
+      formData.append('author', 'c7e11ebd-19be-4089-8f7c-655eaa016c62')
 
-      const response = await axios.post(url, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const response = await axios.post(url, formData, {})
 
       if (response.data.success) {
         navigation.navigate('TabNavigator')
@@ -81,6 +81,7 @@ const AddFile: React.FC = ({ navigation, route }: any) => {
       }
     } catch (error) {
       alert("Une erreur s'est produite lors de la soumission")
+      console.log(error)
     }
   }
 
