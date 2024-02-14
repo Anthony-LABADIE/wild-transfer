@@ -33,7 +33,6 @@ const ProfileSetting = () => {
       })
 
       if (response.ok) {
-        alert('Profile updated successfully!')
         try {
           await updateUser({
             variables: {
@@ -52,6 +51,7 @@ const ProfileSetting = () => {
       alert('Failed to update profile. Please try again.')
       console.error(error)
     }
+    window.location.reload()
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

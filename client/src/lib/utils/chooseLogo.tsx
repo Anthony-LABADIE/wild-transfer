@@ -8,6 +8,8 @@ export const chooseLogo = (format?: string) => {
       return LogoPdf
     case 'png_pipe':
       return LogoFile
+    case 'image2':
+      return LogoFile
     default:
       return LogoUrl
   }
