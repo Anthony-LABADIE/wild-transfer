@@ -49,6 +49,7 @@ export default function FileDetail() {
       variables: { deleteFileId: id },
     })
     navigate('/files')
+    window.location.reload()
   }
 
   const handleOpenChange = (open: boolean) => {

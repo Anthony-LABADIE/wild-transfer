@@ -1,9 +1,9 @@
 import { useLazyQuery } from '@apollo/client'
-import React, { createContext, useEffect, useReducer, useState } from 'react'
+import React, { createContext, useReducer, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { LOGIN } from '../graphql/queries/User.queries'
-import { VERIFY_TOKEN } from '../graphql/queries/refreshToken'
+// import { VERIFY_TOKEN } from '../graphql/queries/refreshToken'
 import {
   IUserContext,
   IUserWithoutPassword,
@@ -96,31 +96,31 @@ function UserContextProvider({ children }: TUserContextProviderProps) {
       navigate('/')
     },
   }
-  const [verifyToken] = useLazyQuery(VERIFY_TOKEN, {
-    onCompleted: (data) => {
-      if (data.CheckToken?.token) {
-        const { user, token } = data.CheckToken
-        dispatch({ type: 'LOG_IN', user, token })
-      } else {
-        dispatch({ type: 'LOG_OUT' })
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        navigate('/')
-      }
-    },
-    onError: (error) => {
-      console.error('Error verifying token:', error)
-    },
-  })
+  // const [verifyToken] = useLazyQuery(VERIFY_TOKEN, {
+  //   onCompleted: (data) => {
+  //     if (data.CheckToken?.token) {
+  //       const { user, token } = data.CheckToken
+  //       dispatch({ type: 'LOG_IN', user, token })
+  //     } else {
+  //       dispatch({ type: 'LOG_OUT' })
+  //       localStorage.removeItem('token')
+  //       localStorage.removeItem('user')
+  //       navigate('/')
+  //     }
+  //   },
+  //   onError: (error) => {
+  //     console.error('Error verifying token:', error)
+  //   },
+  // })
 
-  useEffect(() => {
-    const storedToken = getUserData().token
+  // useEffect(() => {
+  //   const storedToken = getUserData().token
 
-    if (storedToken) {
-      // Appeler verifyToken avec le token stocké
-      verifyToken({ variables: { token: storedToken } })
-    }
-  }, [])
+  //   if (storedToken) {
+  //     // Appeler verifyToken avec le token stocké
+  //     verifyToken({ variables: { token: storedToken } })
+  //   }
+  // }, [])
 
   return (
     <UserContext.Provider value={authContext}>{children}</UserContext.Provider>
