@@ -1,7 +1,8 @@
 import express from 'express';
 import path from 'path';
 import { uploadMiddleware } from '../middleware/uploadMiddleware';
-import { db } from '../index';
+import { profileMiddleware } from '../middleware/profileMiddleware';
+import { db, dbUser } from '../index';
 import ffmpeg from 'fluent-ffmpeg';
 
 const router = express.Router();
@@ -103,6 +104,37 @@ router.get('/download/:id', async (req, res) => {
         const filePath = path.join(file.url);
 
         res.download(filePath, file.title);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// Route POST pour téléverser une image de profil
+router.post('/profile', profileMiddleware, async (req, res) => {
+    if (!req.file) {
+        return res.status(400).send("Aucun fichier n'a été fourni.");
+    }
+    console.log(req);
+    // Logique de traitement de l'image (par exemple, enregistrement dans la base de données, etc.)
+    console.log('Fichier téléversé avec succès:', req.file);
+
+    return res.status(200).send('Fichier téléversé avec succès.');
+});
+
+router.get('/profile/:id', async (req, res) => {
+    try {
+        const user = await dbUser.findOne({
+            where: { id: req.params.id },
+        });
+
+        if (!user) {
+            return res.status(404).send('File not found');
+        }
+
+        const filePath = path.join(user.imgUrl);
+
+        res.sendFile(filePath);
     } catch (err) {
         console.log(err);
         res.status(500).send('Internal Server Error');

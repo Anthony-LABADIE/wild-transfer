@@ -1,5 +1,12 @@
+import cors from 'cors';
 import multer from 'multer';
 import path from 'path';
+import express from 'express';
+
+const app = express();
+
+// Configuration des CORS
+app.use(cors());
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

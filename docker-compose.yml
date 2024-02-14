@@ -26,6 +26,7 @@ services:
       - ./server/src:/app/src
       - tempUploads:/uploads/tempUploads
       - finalUploads:/uploads/finalUploads
+      - profileUploads:/uploads/profileUploads
     ports:
       - 4000:4000
     environment:
@@ -71,3 +72,4 @@ volumes:
   postgres:
   tempUploads:
   finalUploads:
+  profileUploads:

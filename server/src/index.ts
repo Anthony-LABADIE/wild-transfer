@@ -23,10 +23,15 @@ import { EmojiResolver } from './resolvers/emoji.resolver';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-app.use(cors());
+app.use(
+    cors({
+        origin: '*',
+    })
+);
 app.use('/uploads', uploadRoutes);
 const httpServer = http.createServer(app);
 export const db = dataSource.getRepository('File');
+export const dbUser = dataSource.getRepository('User');
 
 async function main() {
     const schema = await buildSchema({

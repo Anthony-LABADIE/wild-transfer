@@ -2,6 +2,8 @@ import { Menu, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 
+import logoUser from '../../assets/utilisateur.png'
+import useAuth from '../../hooks/useAuth'
 import { classNames } from '../../lib/utils/common'
 
 interface DropdownProfileProps {
@@ -9,6 +11,9 @@ interface DropdownProfileProps {
 }
 
 const DropdownProfile: React.FC<DropdownProfileProps> = ({ handleSignOut }) => {
+  const { user } = useAuth()
+  const VITE_URI = import.meta.env['VITE_URI'] as string
+
   return (
     <div>
       <Menu as="div" className="relative ml-3">
@@ -16,12 +21,19 @@ const DropdownProfile: React.FC<DropdownProfileProps> = ({ handleSignOut }) => {
           <Menu.Button className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             <span className="absolute -inset-1.5" />
             <span className="sr-only">Open user menu</span>
-            <img
-              className="h-8 w-8 rounded-full"
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfa
-              WQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-              alt=""
-            />
+            {user?.imgUrl !== null ? (
+              <img
+                src={`${VITE_URI}/uploads/profile/${user?.id}`}
+                alt=""
+                className="h-8 w-8 rounded-full"
+              />
+            ) : (
+              <img
+                src={logoUser}
+                alt="image"
+                className="h-8 w-8 rounded-full"
+              />
+            )}
           </Menu.Button>
         </div>
         <Transition

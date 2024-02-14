@@ -23,5 +23,8 @@ RUN mkdir -p ./uploads/tempUploads && \
 RUN mkdir -p ./uploads/finalUploads && \
     chmod -R 755 ./uploads/finalUploads
 
+RUN mkdir -p ./uploads/profileUploads && \
+    chmod -R 755 ./uploads/profileUploads
+
 
 CMD ["yarn", "start"]

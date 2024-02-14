@@ -49,6 +49,7 @@ export default function FileDetail() {
       variables: { deleteFileId: id },
     })
     navigate('/files')
+    window.location.reload()
   }
 
   const handleOpenChange = (open: boolean) => {
@@ -138,7 +139,7 @@ export default function FileDetail() {
                     </div>
                   </dl>
                   <div className="mt-6 flex flex-col gap-4 border-t border-gray-900/5 px-6 py-6">
-                    <Link to={`${VITE_URI}//uploads/download/${dataItem.id}`}>
+                    <Link to={`${VITE_URI}/uploads/download/${dataItem.id}`}>
                       <Button className="w-[140px] h-[28px]" size="small">
                         Télécharger
                       </Button>
