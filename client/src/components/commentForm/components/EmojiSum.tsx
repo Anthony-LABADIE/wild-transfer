@@ -33,7 +33,7 @@ const EmojiSum = (props: EmojiSumProps) => {
   if (emojisUnNeutral && emojisUnNeutral.length === 0) return null
 
   return (
-    <div className="flex items-center my-1 h-5 py-3 border-2 justify-center px-5 rounded-md border border-gray-200">
+    <div className="flex items-center my-1 h-5 py-3 border-2 justify-center px-5 rounded-md border-gray-200">
       <Listbox>
         {({ open }) => (
           <>
