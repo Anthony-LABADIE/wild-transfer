@@ -21,7 +21,15 @@ const Transition = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/send-document" element={<SendDocument />} />
+
+        <Route
+          path="/send-document"
+          element={
+            <ProtectedRoute>
+              <SendDocument />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/home"
           element={
@@ -30,15 +38,78 @@ const Transition = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/profile" element={<ProfileSetting />} />
-        <Route path="/files" element={<Files />} />
-        <Route path="/share-url" element={<SharedUrl />} />
-        <Route path="/folder-share-url" element={<FolderSharedUrl />} />
-        <Route path="/share-url/:id" element={<FileSharedUrlDetail />} />
-        <Route path="/folder-share-url/:id" element={<FileSharedUrlDetail />} />
-        <Route path="/share-url/:id/:id" element={<FileDetail />} />
-        <Route path="/files/:id" element={<FileDetail />} />
-        <Route path="/layout" element={<Layout children />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfileSetting />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/files"
+          element={
+            <ProtectedRoute>
+              <Files />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/share-url"
+          element={
+            <ProtectedRoute>
+              <SharedUrl />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/folder-share-url"
+          element={
+            <ProtectedRoute>
+              <FolderSharedUrl />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/share-url/:id"
+          element={
+            <ProtectedRoute>
+              <FileSharedUrlDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/folder-share-url/:id"
+          element={
+            <ProtectedRoute>
+              <FileSharedUrlDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/share-url/:id/:id"
+          element={
+            <ProtectedRoute>
+              <FileDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/files/:id"
+          element={
+            <ProtectedRoute>
+              <FileDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/layout"
+          element={
+            <ProtectedRoute>
+              <Layout children />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   )

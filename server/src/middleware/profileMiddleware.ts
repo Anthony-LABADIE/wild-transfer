@@ -17,8 +17,6 @@ export const profileMiddleware = multer({
     //     fileSize: 10 * 1024 * 1024,
     // },
     fileFilter: (req, file, cb) => {
-        console.log(req);
-        console.log(file);
         if (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg') {
             cb(null, true);
         } else {

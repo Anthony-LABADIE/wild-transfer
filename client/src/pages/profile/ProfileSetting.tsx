@@ -26,16 +26,11 @@ const ProfileSetting = () => {
     const formData = new FormData()
     formData.append('avatar', image)
 
-    console.log(image)
-
     try {
       const response = await fetch(`${VITE_URI}/uploads/profile`, {
         method: 'POST',
         body: formData,
       })
-
-      console.log(await response)
-      console.log(`/uploads/profileUploads/${image.name}`, '🔵')
 
       if (response.ok) {
         alert('Profile updated successfully!')
