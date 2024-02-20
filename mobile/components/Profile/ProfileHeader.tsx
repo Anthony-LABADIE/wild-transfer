@@ -11,7 +11,7 @@ const ProfileHeader = () => {
       <View style={styles.profileInfo}>
         <Image
           style={styles.profilePic}
-          source={require('../../assets/connection/harambe.png')}
+          source={require('../../assets/connection/utilisateur.png')}
         />
         <View>
           <Text style={styles.name}>{user?.username}</Text>

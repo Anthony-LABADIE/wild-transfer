@@ -8,10 +8,10 @@ const SettingHelp = () => {
     <ScrollView style={styles.container}>
       <ProfileHeader />
       <View style={styles.containerText}>
-        <Text style={styles.text}>Help</Text>
+        <Text style={styles.text}>Aide</Text>
       </View>
       <View style={styles.containerRows}>
-        <Text style={styles.title}>Report a problem</Text>
+        <Text style={styles.title}>Rapport et problème</Text>
         <Icon name="md-chevron-forward" type="ionicon" style={styles.icon} />
       </View>
       <View style={styles.containerRows}>
@@ -19,7 +19,7 @@ const SettingHelp = () => {
         <Icon name="md-chevron-forward" type="ionicon" style={styles.icon} />
       </View>
       <View style={styles.containerRows}>
-        <Text style={styles.title}>Privacy Policy</Text>
+        <Text style={styles.title}>Politique de confidentialité</Text>
         <Icon name="md-chevron-forward" type="ionicon" style={styles.icon} />
       </View>
     </ScrollView>
