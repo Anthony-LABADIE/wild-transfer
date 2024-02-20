@@ -61,7 +61,6 @@ const SharedUrl = () => {
 
   if (loading) return <FilesSkeleton />
   if (error) return <PageNotFound />
-  console.log(activityItems)
 
   return (
     <Layout>

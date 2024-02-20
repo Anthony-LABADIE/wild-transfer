@@ -57,7 +57,7 @@ export default function ProfileScreen({ navigation }) {
               style={styles.buttonIcon}
               source={require('../assets/connection/user.png')}
             />
-            <Text style={styles.buttonText}>See Profile</Text>
+            <Text style={styles.buttonText}>Voir Profile</Text>
           </View>
           <Image
             style={styles.chevronIcon}
@@ -71,7 +71,7 @@ export default function ProfileScreen({ navigation }) {
               style={styles.buttonIcon}
               source={require('../assets/connection/lock.png')}
             />
-            <Text style={styles.buttonText}>Password</Text>
+            <Text style={styles.buttonText}>Mot de passe</Text>
           </View>
           <Image
             style={styles.chevronIcon}
@@ -95,7 +95,7 @@ export default function ProfileScreen({ navigation }) {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>More informations</Text>
+        <Text style={styles.sectionTitle}>Plus d'informations</Text>
 
         <TouchableOpacity style={styles.button} onPress={() => {}}>
           <View style={styles.buttonContent}>
@@ -103,7 +103,7 @@ export default function ProfileScreen({ navigation }) {
               style={styles.buttonIcon}
               source={require('../assets/connection/star.png')}
             />
-            <Text style={styles.buttonText}>Rate & Review</Text>
+            <Text style={styles.buttonText}>Notez et commentez</Text>
           </View>
           <Image
             style={styles.chevronIcon}
@@ -117,7 +117,7 @@ export default function ProfileScreen({ navigation }) {
               style={styles.buttonIcon}
               source={require('../assets/connection/question.png')}
             />
-            <Text style={styles.buttonText}>Help</Text>
+            <Text style={styles.buttonText}>Aide</Text>
           </View>
           <Image
             style={styles.chevronIcon}
@@ -133,7 +133,7 @@ export default function ProfileScreen({ navigation }) {
               style={styles.buttonIcon}
               source={require('../assets/connection/logout.png')}
             />
-            <Text style={styles.buttonText}>Log out</Text>
+            <Text style={styles.buttonText}>Se déconnecter</Text>
           </View>
           <Image
             style={styles.chevronIcon}

@@ -1,8 +1,9 @@
 import { useLazyQuery } from '@apollo/client'
-import React, { createContext, useEffect, useReducer, useState } from 'react'
+import React, { createContext, useReducer, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { CHECKTOKEN, LOGIN } from '../graphql/queries/User.queries'
+import { LOGIN } from '../graphql/queries/User.queries'
+// import { VERIFY_TOKEN } from '../graphql/queries/refreshToken'
 import {
   IUserContext,
   IUserWithoutPassword,
@@ -46,7 +47,7 @@ const authReducer = (prevState: AuthState, action: AuthAction): AuthState => {
 function UserContextProvider({ children }: TUserContextProviderProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [login] = useLazyQuery(LOGIN)
-  const [checkToken] = useLazyQuery(CHECKTOKEN)
+  // const [checkToken] = useLazyQuery(CHECKTOKEN)
   const navigate = useNavigate()
 
   const getUserData = (): AuthState => {
@@ -95,22 +96,32 @@ function UserContextProvider({ children }: TUserContextProviderProps) {
       navigate('/')
     },
   }
+  // const [verifyToken] = useLazyQuery(VERIFY_TOKEN, {
+  //   onCompleted: (data) => {
+  //     if (data.CheckToken?.token) {
+  //       const { user, token } = data.CheckToken
+  //       dispatch({ type: 'LOG_IN', user, token })
+  //     } else {
+  //       dispatch({ type: 'LOG_OUT' })
+  //       localStorage.removeItem('token')
+  //       localStorage.removeItem('user')
+  //       navigate('/')
+  //     }
+  //   },
+  //   onError: (error) => {
+  //     console.error('Error verifying token:', error)
+  //   },
+  // })
 
-  useEffect(() => {
-    checkToken({
-      variables: { token: getUserData().token },
-      onCompleted(data) {
-        if (data.CheckToken?.message) {
-          alert(data.CheckToken?.message)
-          authContext.signOut()
-        } else {
-          const { token, ...user } = data.CheckToken
-          localStorage.setItem('token', token)
-          localStorage.setItem('user', JSON.stringify(user))
-        }
-      },
-    })
-  }, [])
+  // useEffect(() => {
+  //   const storedToken = getUserData().token
+
+  //   if (storedToken) {
+  //     // Appeler verifyToken avec le token stocké
+  //     verifyToken({ variables: { token: storedToken } })
+  //   }
+  // }, [])
+
   return (
     <UserContext.Provider value={authContext}>{children}</UserContext.Provider>
   )

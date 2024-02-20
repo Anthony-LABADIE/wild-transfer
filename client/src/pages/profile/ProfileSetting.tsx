@@ -26,19 +26,13 @@ const ProfileSetting = () => {
     const formData = new FormData()
     formData.append('avatar', image)
 
-    console.log(image)
-
     try {
       const response = await fetch(`${VITE_URI}/uploads/profile`, {
         method: 'POST',
         body: formData,
       })
 
-      console.log(await response)
-      console.log(`/uploads/profileUploads/${image.name}`, '🔵')
-
       if (response.ok) {
-        alert('Profile updated successfully!')
         try {
           await updateUser({
             variables: {
@@ -57,6 +51,7 @@ const ProfileSetting = () => {
       alert('Failed to update profile. Please try again.')
       console.error(error)
     }
+    window.location.reload()
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
