@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post('/files', uploadMiddleware, async (req, res) => {
     if (!req.files || req.files.length === 0) {
-        return res.status(400).send("Aucun fichier n'a été fourni.");
+        return res.status(400).send('No file was provided.');
     }
 
     const fileDataArray: any[] = [];
@@ -17,7 +17,7 @@ router.post('/files', uploadMiddleware, async (req, res) => {
     const files: Record<number | string, Express.Multer.File> = req.files as any;
     req.headers['Content-Type'] = 'application/json';
 
-    // Utilisez une boucle pour traiter chaque fichier
+    // Loop through the files and process them
     for (let i = 0; i < filesLength; i++) {
         const file = files[i];
         const filePath = file.path;
@@ -25,7 +25,7 @@ router.post('/files', uploadMiddleware, async (req, res) => {
 
         try {
             await new Promise((resolve) => {
-                // Vérifie si le fichier est un PDF
+                // Verifying if the file is a PDF or another type of file
                 if (
                     file.mimetype === 'application/pdf' ||
                     file.mimetype === 'application/x-pdf' ||
@@ -36,7 +36,7 @@ router.post('/files', uploadMiddleware, async (req, res) => {
                     file.mimetype === 'text/csv' ||
                     file.mimetype === 'application/json'
                 ) {
-                    // Ignorer l'appel à ffprobe pour les fichiers PDF
+                    // Ignore the file if it's a PDF
                     const duration = '0';
                     const format = 'pdf';
 
@@ -53,7 +53,7 @@ router.post('/files', uploadMiddleware, async (req, res) => {
                     fileDataArray.push(fileData);
                     resolve(null);
                 } else {
-                    // Appel à ffprobe pour les autres types de fichiers
+                    // If the file is not a PDF, use ffprobe to get the duration and format
                     ffmpeg.ffprobe(filePath, async (err, metadata) => {
                         if (err) {
                             console.error('Erreur avec ffprobe:', err);

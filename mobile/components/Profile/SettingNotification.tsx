@@ -23,11 +23,11 @@ const SettingNotification = () => {
     <ScrollView style={styles.container}>
       <ProfileHeader />
       <View style={styles.containerText}>
-        <Text style={styles.text}>Update your Notification</Text>
+        <Text style={styles.text}>Modifier vos notifications</Text>
       </View>
       <View style={styles.containerInput}>
         <View style={styles.containerSwitch}>
-          <Text style={styles.textSwitch}>Notification</Text>
+          <Text style={styles.textSwitch}>Notifications</Text>
           <Switch
             trackColor={{ false: '#767577', true: '#abb8de' }}
             thumbColor={isEnabledAll ? '#6A2AFE' : '#f4f3f4'}

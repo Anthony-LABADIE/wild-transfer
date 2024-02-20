@@ -49,7 +49,7 @@ const SettingProfile = () => {
       <View style={styles.containerImage}>
         <Image
           style={styles.profilePic}
-          source={require('../../assets/connection/harambe.png')}
+          source={require('../../assets/connection/utilisateur.png')}
         />
       </View>
       <View style={styles.containerInput}>
