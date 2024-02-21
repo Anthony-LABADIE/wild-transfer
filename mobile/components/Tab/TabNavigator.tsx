@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   createBottomTabNavigator,
   BottomTabNavigationOptions,
@@ -28,6 +28,7 @@ type BottomTabNavigationOptionsType = {
 const Tab = createBottomTabNavigator<TabParamList>()
 
 const TabNavigator = () => {
+
   return (
     <Tab.Navigator
       screenOptions={({

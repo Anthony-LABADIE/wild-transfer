@@ -40,6 +40,7 @@ const Upload = ({ setShowDocument }: UploadProps) => {
   const VITE_URI = import.meta.env['VITE_URI'] as string
   const handleSend = async () => {
     const formdata = new FormData()
+    console.log(files, '🔵')
 
     for (const file of files) {
       formdata.append(`files`, file as Blob)

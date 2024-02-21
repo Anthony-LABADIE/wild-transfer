@@ -69,24 +69,24 @@ const SettingPassword = () => {
     <ScrollView style={styles.container}>
       <ProfileHeader />
       <View style={styles.containerText}>
-        <Text style={styles.text}>Update your Password</Text>
+        <Text style={styles.text}>Modifier votre mot de passe</Text>
       </View>
       <View style={styles.containerInput}>
-        <Text style={styles.title}>Old Password</Text>
+        <Text style={styles.title}>Ancien mot de passe</Text>
         <TextInput
           style={styles.input}
           placeholder="Old Password"
           onChangeText={(value) => onChangePassword('oldPassword', value)}
           value={password.oldPassword}
         />
-        <Text style={styles.title}>New Password</Text>
+        <Text style={styles.title}>Nouveau mot de passe</Text>
         <TextInput
           style={styles.input}
           placeholder="New Password"
           onChangeText={(value) => onChangePassword('newPassword', value)}
           value={password.newPassword}
         />
-        <Text style={styles.title}>Confirm Password</Text>
+        <Text style={styles.title}>Confirmer mot de passe</Text>
         <TextInput
           style={styles.input}
           placeholder="Confirm Password"
@@ -94,7 +94,7 @@ const SettingPassword = () => {
           value={password.password}
         />
         <TouchableOpacity style={styles.button} onPress={onSubmit}>
-          <Text style={styles.buttonText}>Sent</Text>
+          <Text style={styles.buttonText}>Envoyer</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

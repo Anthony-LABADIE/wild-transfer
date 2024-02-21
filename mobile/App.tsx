@@ -4,6 +4,7 @@ import client from './Graphql/Client/Client'
 import { StyleSheet } from 'react-native'
 import UserContextProvider, { useAuth } from './context/UserContext'
 import { NavigationContainer } from '@react-navigation/native'
+import Permissions from 'react-native-permissions'
 
 import Navigation from './Navigation'
 

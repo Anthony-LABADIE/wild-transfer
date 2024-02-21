@@ -41,7 +41,6 @@ const ModalSendEmail: React.FC<ModalSendEmailProps> = ({
         },
       },
     })
-    console.log('data', data)
   }
   const handleSubmit = () => {
     handleCreateSharedUrl()
