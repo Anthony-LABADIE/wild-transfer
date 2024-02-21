@@ -1,68 +1,73 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { Center, NativeBaseProvider } from 'native-base';
-import DropdownMenu from './DropdownMenu';
-import { FILEPUBLIC } from '../../Graphql/queries/File.queries';
-import { useQuery } from '@apollo/client';
-import { RefreshControl } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native'
+import { Center, NativeBaseProvider } from 'native-base'
+import DropdownMenu from './DropdownMenu'
+import { FILEPUBLIC } from '../../Graphql/queries/File.queries'
+import { useQuery } from '@apollo/client'
+import { RefreshControl } from 'react-native'
+import { useIsFocused } from '@react-navigation/native'
 
 type FileData = {
-  title: string;
-  description: string;
-  format: string;
-  size: string;
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
-};
+  title: string
+  description: string
+  format: string
+  size: string
+  createdAt: string
+  updatedAt: string
+  userId: string
+}
 
 export default function PublicFilesList() {
-  const [data, setData] = useState<FileData[]>([]);
-const { loading, error, data: filePublic } = useQuery(FILEPUBLIC);
-const [refreshing, setRefreshing] = useState(false);
+  const [data, setData] = useState<FileData[]>([])
+  const { data: filePublic, refetch } = useQuery(FILEPUBLIC)
+  const [refreshing, setRefreshing] = useState(false)
 
+  const isFocused = useIsFocused()
+  useEffect(() => {
+    if (isFocused) {
+      refetch()
+    }
+  }, [isFocused])
 
-const onRefresh = () => {
-  setRefreshing(true);
+  useEffect(() => {
+    if (filePublic && filePublic.FileListPublic) {
+      setData(filePublic.FileListPublic)
+    }
+  }, [filePublic])
 
-  setTimeout(() => {
-    setRefreshing(false);
-  }, 2000);
-};
+  const getImageSource = (fileType) => {
+    switch (true) {
+      case /pdf/.test(fileType):
+        return require('../../assets/file/pdf.png')
 
-useEffect(() => {
-  if (filePublic && filePublic.FileListPublic) {
-    setData(filePublic.FileListPublic);
+      case /image|png|jpg|jpeg|gif/.test(fileType):
+        return require('../../assets/file/png.png')
+
+      case /audio|mp3|wav|flac/.test(fileType):
+        return require('../../assets/file/mp3.jpg')
+
+      case /video|mp4|avi|mkv/.test(fileType):
+        return require('../../assets/file/mp4.png')
+
+      case /text|txt|md/.test(fileType):
+        return require('../../assets/file/txt.png')
+
+      default:
+        return require('../../assets/file/file.png')
+    }
   }
-}, [filePublic]);
-
-const getImageSource = (fileType) => {
-  switch (true) {
-    case /pdf/.test(fileType):
-      return require('../../assets/file/pdf.png');
-
-    case /image|png|jpg|jpeg|gif/.test(fileType):
-      return require('../../assets/file/png.png');
-
-    case /audio|mp3|wav|flac/.test(fileType):
-      return require('../../assets/file/mp3.jpg');
-
-    case /video|mp4|avi|mkv/.test(fileType):
-      return require('../../assets/file/mp4.png');
-
-    case /text|txt|md/.test(fileType):
-      return require('../../assets/file/txt.png');
-
-    default:
-      return require('../../assets/file/file.png');
-  }
-};
 
   return (
-    <ScrollView style={styles.container}
-    refreshControl={
-      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-    }
+    <ScrollView
+      style={styles.container}
+      refreshControl={<RefreshControl refreshing={refreshing} />}
     >
       {data.map((item, index) => (
         <TouchableOpacity key={index} onPress={() => {}}>
@@ -86,7 +91,7 @@ const getImageSource = (fileType) => {
         </TouchableOpacity>
       ))}
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -125,4 +130,4 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     marginRight: 20,
   },
-});
+})
