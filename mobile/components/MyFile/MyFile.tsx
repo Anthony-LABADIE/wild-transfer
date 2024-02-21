@@ -1,66 +1,76 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
-import * as SecureStore from 'expo-secure-store';
-import { useQuery } from '@apollo/client';
-import { FILELISTBYAUTHORID } from '../../Graphql/queries/FileByIdAuthor.queries';
-import UserContextProvider, { useAuth } from '../../context/UserContext';
-
+import React, { useEffect, useState } from 'react'
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native'
+import { useQuery } from '@apollo/client'
+import { FILELISTBYAUTHORID } from '../../Graphql/queries/FileByIdAuthor.queries'
+import { useAuth } from '../../context/UserContext'
+import { useIsFocused } from '@react-navigation/native'
 type FileData = {
-  title: string;
-  description: string;
-  format: string;
-  size: string;
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
-};
-
-
+  title: string
+  description: string
+  format: string
+  size: string
+  createdAt: string
+  updatedAt: string
+  userId: string
+}
 
 export default function MyFileList() {
-  const { user } = useAuth();
-    const [data, setData] = useState([]);
-    const { loading, error, data: file } = useQuery(FILELISTBYAUTHORID, {
-      variables: { id: user?.id },
-    });
+  const { user } = useAuth()
+  const [data, setData] = useState([])
+  const {
+    loading,
+    error,
+    data: file,
+    refetch,
+  } = useQuery(FILELISTBYAUTHORID, {
+    variables: { id: user?.id },
+  })
+  const isFocused = useIsFocused()
+  useEffect(() => {
+    if (isFocused) {
+      refetch()
+    }
+  }, [isFocused])
 
+  useEffect(() => {
+    if (!loading && !error && file) {
+      setData(file.FileListByAuthorId)
+    }
+  }, [loading, error, file])
 
-
-    useEffect(() => {
-      if (!loading && !error && file) {
-        setData(file.FileListByAuthorId);
-      }
-    }, [loading, error, file]);
-  
-    if (loading) return <Text>Chargement...</Text>;
-    if (error) return <Text>Erreur : {error.message}</Text>;
-
+  if (loading) return <Text>Chargement...</Text>
+  if (error) return <Text>Erreur : {error.message}</Text>
 
   const getImageSource = (fileType) => {
     switch (true) {
       case /pdf/.test(fileType):
-        return require('../../assets/file/pdf.png');
-  
+        return require('../../assets/file/pdf.png')
+
       case /image|png|jpg|jpeg|gif/.test(fileType):
-        return require('../../assets/file/png.png');
-  
+        return require('../../assets/file/png.png')
+
       case /audio|mp3|wav|flac/.test(fileType):
-        return require('../../assets/file/mp3.jpg');
-  
+        return require('../../assets/file/mp3.jpg')
+
       case /video|mp4|avi|mkv/.test(fileType):
-        return require('../../assets/file/mp4.png');
-  
+        return require('../../assets/file/mp4.png')
+
       case /text|txt|md/.test(fileType):
-        return require('../../assets/file/txt.png');
-  
+        return require('../../assets/file/txt.png')
+
       default:
-        return require('../../assets/file/file.png');
+        return require('../../assets/file/file.png')
     }
-  };
+  }
 
   return (
-
     <ScrollView style={styles.container}>
       {file.FileListByAuthorId.map((item, index) => (
         <TouchableOpacity key={index} onPress={() => {}}>
@@ -79,7 +89,7 @@ export default function MyFileList() {
         </TouchableOpacity>
       ))}
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -118,7 +128,7 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     marginRight: 20,
   },
-   deleteBox: {
+  deleteBox: {
     backgroundColor: 'red',
     justifyContent: 'center',
     alignItems: 'center',
@@ -129,4 +139,4 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-});
+})

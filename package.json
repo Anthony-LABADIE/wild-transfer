@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "docker compose --profile dev up --build",
     "dev client": "cd client && vite --port 8000",
-    "build client": "cd client && tsc && vite build"
+    "build client": "cd client && tsc && vite build",
+    "dev mobile": "cd mobile && yarn start"
   }
 }

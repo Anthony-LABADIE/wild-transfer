@@ -1,33 +1,37 @@
 import React, { useState } from 'react'
-import {
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  Switch,
-} from 'react-native'
+import { ScrollView, Text, TouchableOpacity, Image, Switch } from 'react-native'
 import axios from 'axios'
 import * as Animatable from 'react-native-animatable'
+import { CREATE_FILE } from '../../../Graphql/mutations/file.mutation'
 import * as DocumentPicker from 'expo-document-picker'
 import styles from './styles'
 import { File } from 'buffer'
+import { useAuth } from '../../../context/UserContext'
+import { useMutation } from '@apollo/client'
 
-const url = `${process.env.EXPO_PUBLIC_UPLOADS_API_URL}uploads/files`
+const url = `${process.env.EXPO_PUBLIC_UPLOADS_API_URL}/uploads/files`
+export interface dataResult {
+  CreateFile: {
+    author: {
+      username: string
+    }
+    description: string
+    id: string
+    createdAt: string
+    duration: string
+    format: string
+    isPublic: string
+    title: string
+    url: string
+  }
+}
 
-const AddFile: React.FC = ({ navigation, route }: any) => {
-  const [fileUpload, setFileUpload] = useState<File | null>(null)
-  const [fileForm, setFileForm] = useState({
-    name: '',
-    description: '',
-    file: fileUpload,
-    tags: '',
+const AddFile: React.FC = ({ navigation }: any) => {
+  const [createFile] = useMutation(CREATE_FILE, {
+    fetchPolicy: 'no-cache',
   })
-
-  const [isInputActive, setIsInputActive] = useState(false)
-  const [isInputActiveDescription, setIsInputActiveDescription] =
-    useState(false)
-  const [isInputActiveTags, setIsInputActiveTags] = useState(false)
+  const { user } = useAuth()
+  const [fileForm, setFileForm] = useState<DocumentPicker.DocumentPickerAsset[]>([]) 
   const [isSwitchOn, setIsSwitchOn] = useState(false)
   const [fileInfoVisible, setFileInfoVisible] = useState(false)
 
@@ -35,54 +39,60 @@ const AddFile: React.FC = ({ navigation, route }: any) => {
     const file = await DocumentPicker.getDocumentAsync({
       type: '*/*',
     })
-    const fileUploads = file.assets
-    console.log(fileUploads, 'file')
-
-    setFileUpload(fileUploads)
-    setFileForm({ ...fileForm, file: fileUploads })
-    setFileInfoVisible(true)
+   if (file.assets) {
+     const fileUploads = file.assets
+     setFileForm(fileUploads)
+     setFileInfoVisible(true)
+   }
   }
 
   const handleSwitchChange = (value) => {
     setIsSwitchOn(value)
   }
 
-  const handleNext = async (authContext) => {
-    if (!fileForm.name) {
-      alert('Veuillez remplir le nom du fichier.')
-      return
-    }
-
-    if (!fileForm.file) {
+  const handleNext = async () => {
+    if (!fileForm) {
       alert('Veuillez sélectionner un fichier.')
       return
     }
-    // formdata.append(`files`, file as Blob)
-    // formdata.append(`title[]`, file?.name as string)
-    // formdata.append(`description[]`, file?.name as string)
-    // formdata.append(`isPublic[]`, switchValue ? 'true' : 'false')
-    // formdata.append(`author[]`, user?.username as string)
 
+    const formData = new FormData()
+
+    for (const file of fileForm) {
+      formData.append('files', {
+        name: file.name,
+        type: file.mimeType,
+        uri: file.uri,
+      })
+
+      formData.append(`title[]`, file.name)
+      formData.append(`description[]`, file.name)
+      formData.append(`isPublic[]`, 'true')
+      formData.append(`author[]`, user?.username)
+    }
     try {
-      const formData = new FormData()
-      formData.append('files', fileForm.file)
-      formData.append('title', fileForm.name)
-      formData.append('description', fileForm.description)
-      // formData.append("tags", fileForm.tags);
-      formData.append('isPublic', 'true')
-      formData.append('author', 'c7e11ebd-19be-4089-8f7c-655eaa016c62')
-
-      const response = await axios.post(url, formData, {})
-
-      if (response.data.success) {
-        navigation.navigate('TabNavigator')
-      } else {
-        alert('La soumission a échoué')
+      const response = await axios.post(url, formData, {
+        headers: { 'Content-type': 'multipart/form-data' },
+        transformRequest: (data: FormData) => {
+          return data
+        },
+      })
+      if (response.status === 200) {
+        for (const file of response.data) {
+          try {
+            const { data } = await createFile({
+              variables: { fileToCreate: file },
+            })
+            console.log('data', data)
+          } catch (error) {
+            console.error('CREATE_FILE Error:', error)
+          }
+        }
       }
     } catch (error) {
-      alert("Une erreur s'est produite lors de la soumission")
-      console.log(error)
+      console.error('Error:', error)
     }
+   navigation.navigate('TabNavigator', { refresh: true })
   }
 
   return (
@@ -92,80 +102,17 @@ const AddFile: React.FC = ({ navigation, route }: any) => {
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Add files</Text>
+        <Text style={styles.title}>Ajouter un fichier</Text>
         <Text style={styles.Subtitle}>
-          Add information for the file you want to upload in your link
+          Veuillez sélectionner un fichier à ajouter
         </Text>
-
-        <Animatable.View
-          animation={isInputActive ? 'bounceIn' : undefined}
-          duration={500}
-          style={styles.formContainer}
-        >
-          <Text style={styles.label}>File Name:</Text>
-          <TextInput
-            style={[styles.input, isInputActive ? styles.inputActive : null]}
-            value={fileForm.name}
-            onChangeText={(value) => setFileForm({ ...fileForm, name: value })}
-            placeholder="Enter file name"
-            onFocus={() => setIsInputActive(true)}
-            onBlur={() => setIsInputActive(false)}
-          />
-        </Animatable.View>
-
-        <Animatable.View
-          animation={isInputActiveDescription ? 'bounceIn' : undefined}
-          duration={500}
-          style={styles.formContainer}
-        >
-          <Text style={styles.label}>File Description:</Text>
-          <TextInput
-            style={[
-              styles.input,
-              isInputActiveDescription ? styles.inputActive : null,
-            ]}
-            value={fileForm.description}
-            onChangeText={(value) =>
-              setFileForm({ ...fileForm, description: value })
-            }
-            placeholder="Enter file description"
-            multiline
-            onFocus={() => setIsInputActiveDescription(true)}
-            onBlur={() => setIsInputActiveDescription(false)}
-          />
-        </Animatable.View>
-
-        <Animatable.View
-          animation={isInputActiveTags ? 'bounceIn' : undefined}
-          duration={500}
-          style={styles.formContainer}
-        >
-          <Text style={styles.label}>Tags:</Text>
-          <TextInput
-            style={[
-              styles.input,
-              isInputActiveTags ? styles.inputActive : null,
-            ]}
-            value={fileForm.tags}
-            onChangeText={(value) => setFileForm({ ...fileForm, tags: value })}
-            placeholder="Enter tags (separated by spaces)"
-            multiline
-            onFocus={() => setIsInputActiveTags(true)}
-            onBlur={() => setIsInputActiveTags(false)}
-          />
-        </Animatable.View>
-
         <TouchableOpacity style={styles.pickButton} onPress={handleFilePick}>
-          <Text style={styles.pickButtonText}>Select File</Text>
+          <Text style={styles.pickButtonText}>Sélectionner un fichier</Text>
         </TouchableOpacity>
 
         {fileInfoVisible && (
           <Animatable.View style={styles.fileInfoContainer}>
-            <Text style={styles.fileInfo}>File Name: {fileForm.name}</Text>
-            <Text style={styles.fileInfo}>
-              File Description: {fileForm.description}
-            </Text>
-            <Text style={styles.fileInfo}>Tags: {fileForm.tags}</Text>
+            <Text style={styles.fileInfo}>Nom: {fileForm[0].name}</Text>
           </Animatable.View>
         )}
 
@@ -189,7 +136,7 @@ const AddFile: React.FC = ({ navigation, route }: any) => {
           style={styles.nextButtonContainer}
         >
           <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-            <Text style={styles.nextButtonText}>Next</Text>
+            <Text style={styles.nextButtonText}>Télécharger</Text>
             <Image
               style={styles.imgFuse}
               source={require('../../../assets/Link/fuse.png')}

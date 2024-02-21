@@ -2,16 +2,25 @@
   "build": {
     "preview": {
       "env": {
-        "API_URL": "https://wild-transfer-server-production.up.railway.app/",
-        "UPLOADS_API_URL": "https://wild-transfer-server-production.up.railway.app/"
+        "EXPO_PUBLIC_API_URL": "https://wild-transfer-server-production.up.railway.app",
+        "EXPO_PUBLIC_UPLOADS_API_URL": "https://wild-transfer-server-production.up.railway.app"
       },
       "android": {
         "buildType": "apk"
       }
     },
     "preview3": {
-      "developmentClient": true
+      "developmentClient": true,
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://wild-transfer-server-production.up.railway.app",
+        "EXPO_PUBLIC_UPLOADS_API_URL": "https://wild-transfer-server-production.up.railway.app"
+      }
     },
-    "production": {}
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://wild-transfer-server-production.up.railway.app",
+        "EXPO_PUBLIC_UPLOADS_API_URL": "https://wild-transfer-server-production.up.railway.app"
+      }
+    }
   }
 }
