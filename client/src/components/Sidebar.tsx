@@ -8,9 +8,9 @@ import { navigation } from '../lib/tools/dataSideBar'
 import { classNames } from '../lib/utils/common'
 
 const Sidebar = () => {
-  const { setSidebarOpen, sidebarOpen } = useAuth()
+  const { setSidebarOpen, sidebarOpen, user } = useAuth()
   const [selectedItem, setSelectedItem] = useState('')
-
+  const VITE_URI = import.meta.env['VITE_URI'] as string
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
 
   const toggleProfileMenu = () => {
@@ -115,11 +115,11 @@ const Sidebar = () => {
                             onClick={toggleProfileMenu}
                           >
                             <img
-                              className="h-8 w-8 rounded-full bg-gray-800"
-                              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                              alt=""
+                              className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover"
+                              src={`${VITE_URI}/uploads/profile/${user?.id}`}
+                              alt="imgProfile"
                             />
-                            <span aria-hidden="true">Tom Cook</span>
+                            <span aria-hidden="true">{user?.username}</span>
                             {isProfileMenuOpen && (
                               <div className="absolute right-0 mt-2 w-full bottom-16 bg-gray-900 rounded-lg shadow-lg ring-1 ring-white ring-opacity-10">
                                 <div
