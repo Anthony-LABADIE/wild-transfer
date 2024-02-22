@@ -9,10 +9,10 @@ const app = express();
 app.use(cors());
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: (_, __, cb) => {
         cb(null, path.join(__dirname, '../../uploads/tempUploads/'));
     },
-    filename: (req, file, cb) => {
+    filename: (_, file, cb) => {
         cb(null, Date.now() + '-' + file.originalname);
     },
 });
@@ -22,7 +22,7 @@ const upload = multer({
     limits: {
         fileSize: 10 * 1024 * 1024,
     },
-    fileFilter: (req, file, cb) => {
+    fileFilter: (_, file, cb) => {
         if (file.mimetype === 'image/png' || file.mimetype === 'application/pdf' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg') {
             cb(null, true);
         } else {
