@@ -36,7 +36,6 @@ router.post('/files', uploadMiddleware, async (req, res) => {
                     file.mimetype === 'text/csv' ||
                     file.mimetype === 'application/json'
                 ) {
-                    // Ignore the file if it's a PDF
                     const duration = '0';
                     const format = 'pdf';
 
